@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reform Section 230 — It's Time</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ink: #0e0d0b;
+  --red: #b83232;
+  --gold: #c08a2e;
+  --muted: #6b6860;
+}
+
+* { cursor: none !important; }
+
+#cursor {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--red);
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, background 0.3s;
+}
+
+#cursor.big {
+  width: 32px;
+  height: 32px;
+  background: rgba(184,50,50,0.35);
+}
+
+#cursor-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--red);
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  line-height: 1.7;
+  background: var(--ink);
+  color: #fff;
+  transition: background 0.6s, color 0.6s;
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: var(--red);
+  z-index: 100;
+}
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem 5rem;
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+}
+
+/* big faded 230 behind everything */
+.hero::before {
+  content: '230';
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  font-size: 40vw;
+  font-weight: 900;
+  color: rgba(255,255,255,0.025);
+  pointer-events: none;
+  user-select: none;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  letter-spacing: -0.05em;
+}
+
+.cycling-wrap {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 3rem;
+}
+
+.cycling-label {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(1.5rem, 3.2vw, 2.6rem);
+  font-weight: 300;
+  color: #9c9790;
+  margin-bottom: 0.1rem;
+}
+
+.cycling-word { display: inline-block; min-width: 6ch; }
+
+.word-slot {
+  display: inline-block;
+  color: #f5c842;
+  font-style: italic;
+  animation: fadeWord 3s ease-in-out infinite;
+}
+
+@keyframes fadeWord {
+  0%, 15%  { opacity: 0; transform: translateY(12px); }
+  25%, 75% { opacity: 1; transform: translateY(0); }
+  85%, 100% { opacity: 0; transform: translateY(-12px); }
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: #9c9790;
+  max-width: 50ch;
+  margin: 0 auto 3rem;
+  line-height: 1.8;
+}
+
+.hero-cta {
+  display: inline-flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 13px 30px;
+  border-radius: 2px;
+  text-decoration: none;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary { background: var(--red); color: #fff; }
+.btn-primary:hover { background: #9e2828; }
+
+.btn-outline {
+  background: transparent;
+  color: #c4bfb4;
+  border: 1px solid #3f3d38;
+}
+.btn-outline:hover { border-color: #c4bfb4; color: #fff; }
+
+.ticker {
+  background: var(--red);
+  overflow: hidden;
+  padding: 10px 0;
+  white-space: nowrap;
+  border-top: 1px solid #9e2828;
+  border-bottom: 1px solid #9e2828;
+}
+
+.ticker-track {
+  display: inline-flex;
+  align-items: center;
+  animation: tickerMove 45s linear infinite;
+}
+
+.ticker-phrase {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 0 1.4rem;
+}
+
+.ticker-star {
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
+}
+
+@keyframes tickerMove {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+section {
+  padding: 6rem 2rem;
+  transition: background 0.6s, color 0.6s;
+}
+
+.container { max-width: 1100px; margin: 0 auto; }
+
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eyebrow::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 60px;
+  opacity: 0.4;
+  background: currentColor;
+}
+
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+}
+
+/* law section */
+
+.law-section {
+  background: #0e0d0b;
+  color: #fff;
+}
+
+.law-section .eyebrow { color: var(--gold); }
+.law-section h2 { color: #fff; }
+
+.law-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: start;
+  margin-top: 4rem;
+}
+
+.law-quote {
+  border-left: 3px solid var(--gold);
+  padding: 1.4rem 1.8rem;
+  background: rgba(255,255,255,0.04);
+  border-radius: 0 4px 4px 0;
+  margin: 2rem 0;
+}
+
+.law-quote p {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #e8e4dc;
+  line-height: 1.7;
+}
+
+.law-quote cite {
+  display: block;
+  margin-top: 0.7rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  font-style: normal;
+}
+
+.law-body {
+  color: #9c9790;
+  font-size: 1rem;
+}
+
+.law-body p + p { margin-top: 1.2rem; }
+.law-body strong { color: #fff; font-weight: 500; }
+.law-body .hl { color: #f5c842; font-weight: 500; }
+
+.law-photo { position: relative; }
+
+.law-photo img {
+  width: 100%;
+  display: block;
+  border-radius: 3px;
+  filter: grayscale(30%) contrast(1.05);
+  transition: filter 0.4s;
+}
+
+.law-photo img:hover { filter: grayscale(0%) contrast(1.1); }
+
+.law-photo figcaption {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #4a4843;
+  margin-top: 0.6rem;
+  text-transform: uppercase;
+}
+
+.photo-tag {
+  position: absolute;
+  top: 0.75rem; left: 0.75rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--red);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+/* problems section */
+
+.problems {
+  background: #0f1419;
+  color: #fff;
+  overflow: hidden;
+}
+
+.problems .eyebrow { color: var(--red); }
+.problems h2 { color: #fff; }
+
+.cards-outer {
+  position: relative;
+  margin-top: 4rem;
+}
+
+.cards-track {
+  display: flex;
+  gap: 1.2rem;
+  width: max-content;
+  animation: scrollCards 18s linear infinite;
+}
+
+.cards-track:hover { animation-play-state: paused; }
+
+@keyframes scrollCards {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.topic-card {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 1.3rem 2.2rem;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 2px;
+  background: rgba(255,255,255,0.04);
+  color: #e8e4dc;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.18s;
+}
+
+.topic-card:hover {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  transform: translateY(-3px);
+}
+
+/* fade out the edges */
+.cards-outer::before,
+.cards-outer::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+.cards-outer::before { left: 0; background: linear-gradient(to right, #0f1419, transparent); }
+.cards-outer::after  { right: 0; background: linear-gradient(to left, #0f1419, transparent); }
+
+/* cta */
+
+.cta {
+  background: var(--red);
+  color: #fff;
+  text-align: center;
+  padding: 7rem 2rem;
+}
+
+.cta h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 1.25rem;
+  max-width: 20ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.btn-white { background: #fff; color: var(--red); }
+.btn-white:hover { background: #f0ece4; }
+
+footer {
+  background: #08080a;
+  padding: 2rem 2.5rem;
+  border-top: 1px solid #1a1a1c;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .law-grid { grid-template-columns: 1fr; gap: 3rem; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-dot"></div>
+
+<nav></nav>
+
+<section class="hero">
+  <div class="cycling-wrap">
+    <span class="cycling-label">We need to talk about</span>
+    <span class="cycling-word"><span class="word-slot" id="cycler">child safety</span></span>
+  </div>
+  <p class="hero-sub">
+    Section 230 of the Communications Decency Act gave birth to the modern internet — but it's also shielding platforms from accountability for real, preventable harm. It's time for an honest conversation.
+  </p>
+  <div class="hero-cta">
+    <a href="#law" class="btn btn-primary">Learn the Law</a>
+    <a href="#act" class="btn btn-outline">Take Action</a>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
+
+<section class="law-section" id="law">
+  <div class="container">
+    <p class="eyebrow fade-in">§ 01 — The Law</p>
+    <h2 class="fade-in">26 words that built — and broke — the internet</h2>
+    <div class="law-grid">
+      <div class="law-body fade-in">
+        <div class="law-quote">
+          <p>"No provider or user of an interactive computer service shall be treated as the publisher or speaker of any information provided by another information content provider."</p>
+          <cite>— 47 U.S.C. § 230(c)(1), enacted 1996</cite>
+        </div>
+        <p>Passed in 1996, Section 230 was designed to protect early internet companies from being crushed by lawsuits over what their users posted. It worked — and the internet we know today was built on that foundation.</p>
+        <p>But the internet of 1996 and the internet of today are unrecognizable to each other. Back then, there were roughly <strong>36 million internet users worldwide</strong>. <span class="hl">Today there are over 5 billion.</span> The platforms are no longer scrappy message boards — they are trillion-dollar corporations with algorithmic systems that actively amplify and recommend content.</p>
+        <p>The law has never been meaningfully updated. We pay the price.</p>
+      </div>
+      <figure class="law-photo fade-in">
+        <span class="photo-tag">April 10, 2018</span>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Zuckerberg_Senate_Judiciary_hearing_April_10_2018_%28cropped2%29.jpg/800px-Zuckerberg_Senate_Judiciary_hearing_April_10_2018_%28cropped2%29.jpg"
+          alt="Mark Zuckerberg testifies before the U.S. Senate, 2018"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+          onerror="this.closest('figure').style.display='none'"
+        >
+        <figcaption>Mark Zuckerberg testifies before the U.S. Senate — April 2018</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="problems" id="problems">
+  <div class="container">
+    <p class="eyebrow fade-in">§ 02 — The Problems</p>
+    <h2 class="fade-in">What Section 230 is letting platforms get away with</h2>
+  </div>
+  <div class="cards-outer fade-in">
+    <div class="cards-track">
+      <div class="topic-card">Child Safety</div>
+      <div class="topic-card">Privacy</div>
+      <div class="topic-card">Misinformation</div>
+      <div class="topic-card">Mental Health</div>
+      <div class="topic-card">Democracy</div>
+      <div class="topic-card">Accountability</div>
+      <div class="topic-card">Child Safety</div>
+      <div class="topic-card">Privacy</div>
+      <div class="topic-card">Misinformation</div>
+      <div class="topic-card">Mental Health</div>
+      <div class="topic-card">Democracy</div>
+      <div class="topic-card">Accountability</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="act">
+  <h2>Your voice is the only thing platforms can't lobby against</h2>
+  <div class="cta-btns">
+    <a href="https://www.congress.gov/members/find-your-member" target="_blank" rel="noopener" class="btn btn-white">Contact Your Representative</a>
+  </div>
+</section>
+
+<footer></footer>
+
+<script>
+const cur = document.getElementById('cursor');
+const dot = document.getElementById('cursor-dot');
+let mx = 0, my = 0, cx = 0, cy = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+  dot.style.left = mx + 'px';
+  dot.style.top  = my + 'px';
+});
+
+function moveCursor() {
+  cx += (mx - cx) * 0.12;
+  cy += (my - cy) * 0.12;
+  cur.style.left = cx + 'px';
+  cur.style.top  = cy + 'px';
+  requestAnimationFrame(moveCursor);
+}
+moveCursor();
+
+document.querySelectorAll('a, button, .topic-card').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('big'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+// cycling headline words
+const words = ['child safety', 'your privacy', 'misinformation', 'accountability', 'free speech', 'mental health', 'our democracy', 'the truth'];
+let i = 0;
+const cycler = document.getElementById('cycler');
+
+setInterval(() => {
+  cycler.style.animation = 'none';
+  void cycler.offsetWidth;
+  cycler.style.animation = 'fadeWord 3s ease-in-out infinite';
+  i = (i + 1) % words.length;
+  cycler.textContent = words[i];
+}, 3000);
+
+// build ticker
+const track = document.getElementById('ticker-track');
+let html = '';
+for (let n = 0; n < 20; n++) {
+  html += '<span class="ticker-phrase">Insert News Article</span>';
+  html += '<span class="ticker-star">✦</span>';
+}
+track.innerHTML = html + html;
+
+// background color shift on scroll
+const stops = [
+  { id: 'hero',     bg: '#0e0d0b' },
+  { id: 'law',      bg: '#0e0d0b' },
+  { id: 'problems', bg: '#0f1419' },
+  { id: 'act',      bg: '#b83232' },
+];
+
+function toRgb(hex) {
+  return [
+    parseInt(hex.slice(1,3), 16),
+    parseInt(hex.slice(3,5), 16),
+    parseInt(hex.slice(5,7), 16)
+  ];
+}
+
+function mix(a, b, t) {
+  const ra = toRgb(a), rb = toRgb(b);
+  const r = Math.round(ra[0] + (rb[0] - ra[0]) * t);
+  const g = Math.round(ra[1] + (rb[1] - ra[1]) * t);
+  const bl = Math.round(ra[2] + (rb[2] - ra[2]) * t);
+  return `rgb(${r},${g},${bl})`;
+}
+
+function updateBg() {
+  const wh = window.innerHeight;
+  for (let j = 0; j < stops.length; j++) {
+    const el = document.getElementById(stops[j].id) || document.querySelector('.' + stops[j].id);
+    if (!el) continue;
+    const top = el.getBoundingClientRect().top;
+    const nextEl = j < stops.length - 1
+      ? document.getElementById(stops[j+1].id) || document.querySelector('.' + stops[j+1].id)
+      : null;
+    if (top <= wh * 0.5 && (!nextEl || nextEl.getBoundingClientRect().top > wh * 0.5)) {
+      let t = 0;
+      if (nextEl) {
+        const nt = nextEl.getBoundingClientRect().top;
+        t = Math.max(0, Math.min(1, -nt / wh));
+      }
+      document.body.style.background = mix(stops[j].bg, stops[Math.min(j+1, stops.length-1)].bg, t);
+      break;
+    }
+  }
+}
+
+window.addEventListener('scroll', updateBg, { passive: true });
+updateBg();
+
+// scroll reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
